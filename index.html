@@ -1,0 +1,63 @@
+<html>
+<head>
+  <title> Weather App</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container">
+    <select id="city_dropdown" class="form-control">
+      <option value="4833123">Durham</option>
+      <option value="4487042" selected="selected">Raleigh</option>
+      <option value="5128581">New York</option>
+      <option value="4190598">Dallas</option>
+      <option value="3882428">Los Angeles</option>
+    </select>
+    <div class="main-display">
+      <h3>City Name:<span id= "cityname"></span></h3>
+      <img id="pic" src="http://openweathermap.org/img/w/13d.png">
+      <h3>Description: <span id= "wdesc"></span></h3>
+      <h3>Temperature: <span id="temp"></span></h3>
+    </div>
+  </div>
+  <script>
+// On load
+  $(function(){
+    // pull dropdown value.
+    var cityid = $("#city_dropdown")
+    // Call the function,
+    updateWeather(cityid.val())
+    //when the dropdown changes (on event), call the function with the value.
+    cityid.on("change",function(){
+      updateWeather(cityid.val())
+    })
+
+  })
+  //Pull data from weather API based on a cityid
+  function updateWeather(id){
+      //Dynamically generate API url
+      var url = "http://api.openweathermap.org/data/2.5/forecast/city?id="+id+"&units=imperial&APPID=f2caaf48ffcb6f44ae0587d723d9009c";
+      //Call API
+      $.get( url, function( data ) {
+        console.log(data)
+
+        //First collect the data, then assign to the span
+        var temp = (data.list[0].main.temp)
+        var tempspan = $("#temp").text(temp)
+
+        var desc = data.list[0].weather[0].main
+        var wdescription = $("#wdesc").text(desc)
+
+        var wpic = data.list[0].weather[0].icon
+        var imurl = "http://openweathermap.org/img/w/"
+        var weatherpic = $("#pic").attr("src", imurl+wpic+".png")
+
+        var cname = data.city.name
+        var cityname = $("#cityname").text("  " + cname)
+
+      });
+      console.log("after get")
+  }
+  </script>
+</body>
+</html>
